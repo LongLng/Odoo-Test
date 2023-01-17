@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--        OT Registration Tree-->
+    <record id='ot_registration_tree' model="ir.ui.view">
+        <field name="name">ot.registration.tree</field>
+        <field name="model">ot.registration</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="project_id"/>
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <field name="additional_hours"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id='ot_registration_form' model="ir.ui.view">
+        <field name='name'>ot.registrations.form</field>
+        <field name="model">ot.registration</field>
+        <field name="arch" type="xml">
+            <form>
+
+                <group>
+                    <group>
+                        <field name="project_id"/>
+                        <field name="manager_id"/>
+                        <field name="ot_month"/>
+                    </group>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="dl_manager_id"/>
+                        <field name="create_date" string="Create Date"/>
+                        <field name="additional_hours"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="OT Request Line">
+                        <field name="ot_registration_line_ids">
+                            <tree editable="bottom">
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="category"/>
+                                <field name="is_wfh"/>
+                                <field name="additional_hours"/>
+                                <field name="job_taken"/>
+                                <field name="state"/>
+                                <field name="late_approved"/>
+                                <field name="hr_notes"/>
+                                <field name="attendance_notes"/>
+                                <field name="notes"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+
+    </record>
+    <!-- OT Registration Action-->
+    <record id="action_ot_request" model="ir.actions.act_window">
+        <field name="name">OT Registration</field>
+        <field name="res_model">ot.registration</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            </p>
+        </field>
+    </record>
+</odoo>
