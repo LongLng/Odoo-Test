@@ -19,6 +19,7 @@
         'project',
     ],
     'data': [
+        'views/patient.xml',
     ],
     'demo': [
     ],
