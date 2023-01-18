@@ -25,4 +25,8 @@
         <field name="view_mode">tree</field>
         <field name="context">{}</field>
     </record>
+
+    <!--    menu item-->
+    <menuitem id='ot_registration_details' name='OT Registrations Details ' parent="ot_registration"
+              action="action_ot_registration_detail"/>
 </odoo>

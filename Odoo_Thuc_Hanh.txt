@@ -1,0 +1,12 @@
+Bài toán:
+Thêm chức năng quản lý đăng ký OT cho 1 công ty
+1. Nhân viên khi có cần log request cho đăng ký OT, với thời hạn là 2 ngày kể từ ngày phát sinh OT
+2. Sau khi nhân viên log request và submit, PM của dự án nhận được thông báo qua mail. Lúc này Pm sẽ vào duyệt hoặc từ chối bản ghi của nhân viên.
+- Nếu PM duyệt thì DL nhận được thông báo và vào xác nhận.
++ DL cũng nhận được mail action duyệt và từ chối nếu PM duyệt bản ghi
+- Nếu PM từ chối bản ghi về reject
++ Bản ghi ở reject nhân viên có thể sét về draft và sửa lại
+Lưu ý: 
+Ở mỗi bước của PM và DL nhân viên đều nhận được maill cc
+Nhân viên được xem những bản ghi mình log, DL có thể xem bản ghi của D mình đang chờ duyệt hoặc đã được duyệt, từ chối
+PM được xem bản ghi của dự án mình đang chờ duyệt hoặc đã được duyệt, từ chối

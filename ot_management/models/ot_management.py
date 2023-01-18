@@ -17,7 +17,7 @@ class OTRegistration(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'), ('to_approve', 'To Approve'), ('pm_approved', 'PM Approve'),
          ('dl_approved', 'DL Approved'), ('refused', 'Refused')], default='draft', readonly=True)
-    ot_registration_line_ids = fields.One2many('ot.registration.line', 'ot_registration_id_line',
+    ot_registration_line_ids = fields.One2many('ot.registration.line', 'ot_registration_line_id',
                                                string='OT Registration Lines')
 
     # _sql_constraints = [('ot_registration', 'unique(project_id)', 'Project must be unique')]
@@ -36,9 +36,9 @@ class OTRegistrationLine(models.Model):
     _name = 'ot.registration.line'
     _description = 'OT Registration Line'
 
-    ot_registration_id_line = fields.Many2one('ot.registration', string='OT Registration ID', ondelete='cascade')
-    employee_id = fields.Many2one('hr.employee', related='ot_registration_id_line.employee_id', store=True)
-    project_id = fields.Many2one('project.project', related='ot_registration_id_line.project_id', store=True)
+    ot_registration_line_id = fields.Many2one('ot.registration', string='OT Registration ID', ondelete='cascade')
+    employee_id = fields.Many2one('hr.employee', related='ot_registration_line_id.employee_id', store=True)
+    project_id = fields.Many2one('project.project', related='ot_registration_line_id.project_id', store=True)
     date_from = fields.Datetime(string='From', default=fields.datetime.now(), required=True)
     date_to = fields.Datetime(string='To', default=fields.datetime.now(), required=True)
     category = fields.Selection([('normal_day', 'Ngày bình thường'),
@@ -62,6 +62,6 @@ class OTRegistrationLine(models.Model):
     notes = fields.Char(string='Warning', default='Exceed OT plan', readonly=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('to_approve', 'To Approve'), ('pm_approved', 'PM Approve'),
-         ('dl_approved', 'DL Approved'), ('refused', 'Refused')], related='ot_registration_id_line.state',
+         ('dl_approved', 'DL Approved'), ('refused', 'Refused')], related='ot_registration_line_id.state',
         default='draft',
         readonly=True, store=True)
