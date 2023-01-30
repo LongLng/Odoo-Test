@@ -22,7 +22,6 @@
         'security/ir.model.access.csv',
         'views/ot_registration_details.xml',
         'views/ot_request.xml',
-        'views/menu.xml',
     ],
     'demo': [
     ],

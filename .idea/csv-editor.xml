@@ -66,6 +66,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="D:\Odoo 12.0\server\odoo\addons\l10n_in_schedule6\account.account.template.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="D:\Odoo 12.0\server\odoo\addons\l10n_mn\data\account.tax.group.csv">
           <value>
             <Attribute>
@@ -95,6 +102,13 @@
           </value>
         </entry>
         <entry key="D:\Odoo 12.0\server\odoo\addons\sale_stock\security\ir.model.access.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="D:\Odoo 12.0\server\odoo\addons\test_new_api\ir.model.access.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
