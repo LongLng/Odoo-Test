@@ -21,6 +21,13 @@
         <field name="arch" type="xml">
             <form string="Patients">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="open_patient_appointments" type="object"
+                                class="oe_stat_button" icon="fa-calendar">
+                            <field name="appointment_count" string="Appointments" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
@@ -80,6 +87,6 @@
             </p>
         </field>
     </record>
-    <menuitem id="hospital_root" name="Hospital" sequence="0"/>
+    <menuitem id="hospital_root" name="Hospital" sequence="1"/>
     <menuitem id="hospital_patient" name="Patients" parent="hospital_root" action="action_patient"/>
 </odoo>

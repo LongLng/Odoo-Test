@@ -4,6 +4,10 @@ from odoo.exceptions import ValidationError, AccessError
 
 
 class HospitalPatient(models.Model):
+    def get_appointment_count(self):
+        count = self.env['hospital.appointment'].search_count([('patient_id', '=', self.id)])
+        self.appointment_count = count
+
     _name = 'hospital.patient'
     _description = 'Patient Record'
     _rec_name = 'name_seq'
@@ -17,6 +21,7 @@ class HospitalPatient(models.Model):
     age_group = fields.Selection([('major', 'Major'), ('minor', 'Minor')], string='Age Group', compute='set_age_group')
     name_seq = fields.Char(string='Patient ID', required=True, copy=False, readonly=True, index=True,
                            default=lambda self: _('New'))
+    appointment_count = fields.Integer(string='Appointment', compute='get_appointment_count')
 
     # Tao 1 bảng trong db Constraints sau đó so sánh dữ liệu với bảng đó, không bị xóa
     # _sql_constraints = [('patient_name', 'unique(patient_name)', 'Patient name must be unique')]
@@ -26,6 +31,17 @@ class HospitalPatient(models.Model):
         for rec in self:
             if rec.patient_age <= 5:
                 raise ValidationError(_('The Age Must be Greater than 5'))
+
+    @api.multi
+    def open_patient_appointments(self):
+        return {
+            'name': _('Appointments'),
+            'domain': [('patient_id', '=', self.id)],
+            'res_model': 'hospital.appointment',
+            'view_id': False,
+            'view_mode': 'tree,form',
+            'type': 'ir.actions.act_window',
+        }
 
     # Store = True  thì chỉ tính toán khi truờng được gán thay đổi
     # compute thì tự động cập nhật dữ liệu từ db và trường được gán compute thì được chuyển thành readonly store = False

@@ -18,16 +18,30 @@ class HospitalAppointment(models.Model):
     patient_age = fields.Integer(string='Age', related='patient_id.patient_age', store=True)
     notes = fields.Text(string='Registration Note', default=_get_default)
     appointment_date = fields.Date(string='Date', required=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirm', 'Confirm'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled'),
+    ],
+        string='Status', readonly=True, default='draft')
 
+    def action_confirm(self):
+        for rec in self:
+            rec.state = 'confirm'
+
+    def action_done(self):
+        for rec in self:
+            rec.state = 'done'
+
+        @api.model
+        def create(self, vals):
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.appointment') or _('New')
+            result = super(HospitalAppointment, self).create(vals)
+            return result
     # @api.depends('patient_id','patient_id.patient_age')
     # def set_age(self):
     #     for rec in self:
     #         if rec.patient_id and rec.patient_id.patient_age:
     #             rec.patient_age = rec.patient_id.patient_age
-
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('hospital.appointment') or _('New')
-        result = super(HospitalAppointment, self).create(vals)
-        return result

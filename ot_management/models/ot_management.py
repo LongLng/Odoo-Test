@@ -6,12 +6,16 @@ from odoo.exceptions import ValidationError, AccessError
 class OTRegistration(models.Model):
     _name = 'ot.registration'
     _description = 'OT Registration'
+    _rec_name = 'project_id'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     project_id = fields.Many2one('project.project', string='Project')
-    manager_id = fields.Many2one('hr.employee', string='Approver')
+    manager_id = fields.Many2one('hr.employee', string='Approver', compute='get_default_approver', store=True,
+                                 readonly=False, required=True)
     ot_month = fields.Date(string='OT Month', readonly=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', readonly=True,
                                   default=lambda self: self._get_default_employee())
-    dl_manager_id = fields.Many2one('hr.employee', string='Department lead', readonly=True)
+    dl_manager_id = fields.Many2one('hr.employee', string='Department lead', readonly=True,
+                                    default=lambda self: self.get_default_department_leader())
     create_date = fields.Datetime(string='Created Date', readonly=True)
     additional_hours = fields.Float(string='Total OT', readonly=True)
     state = fields.Selection(
@@ -27,9 +31,19 @@ class OTRegistration(models.Model):
     #         manager_id = self.env['ot.registration'].search(['manager_id', '=', rec.manager_id])
     #         if manager_id:
     #             raise ValidationError(_('You cannot create a recursive hierarchy.'))
+    @api.depends('project_id')
+    def get_default_approver(self):
+        for rec in self:
+            rec.manager_id = self.env['hr.employee'].search([('user_id.id', '=', rec.project_id.user_id.id)], limit=1)
 
     def _get_default_employee(self):
-        return self.env['hr.employee'].sudo().search([('user_id', '=', self._uid)], limit=1)
+        return self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1)
+
+    def get_default_department_leader(self):
+        pass
+
+    def action_submit(self):
+        print('Do U want to submit')
 
 
 class OTRegistrationLine(models.Model):
