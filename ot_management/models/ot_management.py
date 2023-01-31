@@ -2,6 +2,13 @@ from odoo import fields, api, models
 from odoo import tools, _
 from odoo.exceptions import ValidationError, AccessError
 
+from odoo.fields import Date, Datetime
+from datetime import datetime, tzinfo
+from dateutil import tz
+import holidays
+
+import pytz
+
 
 class OTRegistration(models.Model):
     _name = 'ot.registration'
@@ -65,7 +72,8 @@ class OTRegistrationLine(models.Model):
                                  ('holiday_day_night', 'Ngày lễ - Ban đêm'),
                                  ('compensatory_normal', 'Bù ngày lễ vào ngày thường'),
                                  ('compensatory_night', 'Bù ngày lễ vào ban đêm'),
-                                 ('unknown', 'Không thể xác định')], string='OT Category', store=True)
+                                 ('unknown', 'Không thể xác định')], string='OT Category', store=True,
+                                compute='get_category_OT')
     is_wfh = fields.Boolean(string='WFH')
     is_intern = fields.Boolean(string='Is intern', default=False)
     additional_hours = fields.Float(string='Total OT', readonly=True)
@@ -79,3 +87,20 @@ class OTRegistrationLine(models.Model):
          ('dl_approved', 'DL Approved'), ('refused', 'Refused')], related='ot_registration_line_id.state',
         default='draft',
         readonly=True, store=True)
+
+    def set_utc_to_local(self, utc_time, user_timezone):
+        format = "%m/%d/%Y %H:%M:%S"
+        dt_utc = datetime.strptime(utc_time, format)
+        dt_utc = dt_utc.replace(tzinfo=pytz.UTC)
+        dt_local = dt_utc.astimezone(user_timezone)
+        local_time_str = dt_local.strftime(format)
+        return local_time_str
+
+    @api.depends('date_from', 'date_to')
+    def get_category_OT(self):
+        for rec in self:
+            user_timezone = pytz.timezone(self.env.context.get('tz') or self.env.user.tz)
+            # date_timezone = pytz.utc.localize(rec.date_from).astimezone(user_timezone)
+            a = rec.date_from.strftime("%m/%d/%Y %H:%M:%S")
+            print('askjd', a)
+            print('Date-time:', self.set_utc_to_local(a, user_timezone))
