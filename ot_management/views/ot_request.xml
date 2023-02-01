@@ -21,8 +21,22 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_submit" string="Submit" states="draft" type="object"
-                            icon="fa-reply text-warning"
+                    <button name="button_draft" type="object" string="Reset to Draft" class="oe_highlight"
+                            groups="ot_management.group_ot_employee"
+                            attrs="{'invisible': ['|',('state', '!=', 'refused')]}"
+                    />
+                    <button name="button_employ_submit" string="Submit" states="draft" type="object"
+                            icon="fa-reply text-warning" groups="ot_management.group_ot_employee"
+                    />
+                    <button name="button_pm_approve" string="Approve" states="to_approve" type="object"
+                            icon="fa-reply text-warning" groups="ot_management.group_ot_pm"
+                    />
+                    <button name="button_dl_approve" string="Approve" states="pm_approved" type="object"
+                            icon="fa-reply text-warning" groups="ot_management.group_ot_dl"
+                    />
+                    <button name="button_refuse" type="object" string="Refuse" class="oe_highlight"
+                            groups="ot_management.group_ot_pm,ot_management.group_ot_dl"
+                            attrs="{'invisible': ['|',('state', '=', 'refused')]}"
                     />
                     <field name="state" widget="statusbar"/>
                 </header>
