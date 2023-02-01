@@ -30,17 +30,19 @@ class OTRegistration(models.Model):
          ('dl_approved', 'DL Approved'), ('refused', 'Refused')], default='draft', readonly=True)
     ot_registration_line_ids = fields.One2many('ot.registration.line', 'ot_registration_line_id',
                                                string='OT Registration Lines')
+    group_user = fields.Char(compute='get_user_group')
 
-    # group_user = fields.Char(compute='get_user_group')
-    #
-    # def get_user_group(self):
-    #     for rec in self:
-    #         if self.env.user.has_group('ot_management.group_ot_employee'):
-    #             rec.group_user = 'employee'
-    #         elif self.env.user.has_group('ot_management.group_ot_pm'):
-    #             rec.group_user = 'pm'
-    #         elif self.env.user.has_group('ot_management.group_ot_dl'):
-    #             rec.group_user = 'dl'
+    def get_user_group(self):
+        for rec in self:
+            if self.env.user.has_group('ot_management.group_ot_dl'):
+                print('dl')
+                rec.group_user = 'dl'
+            elif self.env.user.has_group('ot_management.group_ot_pm'):
+                print('pm')
+                rec.group_user = 'pm'
+            elif self.env.user.has_group('ot_management.group_ot_employee'):
+                print('employee')
+                rec.group_user = 'employee'
 
     @api.depends('ot_registration_line_ids')
     def addition_all_ot(self):

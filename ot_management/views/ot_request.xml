@@ -22,25 +22,31 @@
             <form>
                 <header>
                     <button name="button_draft" type="object" string="Reset to Draft" class="oe_highlight"
-                            groups="ot_management.group_ot_employee"
-                            attrs="{'invisible': ['|',('state', '!=', 'refused')]}"
+                            attrs="{'invisible': ['|',('state', '!=', 'refused'),('group_user','!=','employee')]}"
                     />
                     <button name="button_employ_submit" string="Submit" states="draft" type="object"
                             icon="fa-reply text-warning" groups="ot_management.group_ot_employee"
+                            attrs="{'invisible': ['|',('group_user','!=','employee')]}"
                     />
                     <button name="button_pm_approve" string="Approve" states="to_approve" type="object"
                             icon="fa-reply text-warning" groups="ot_management.group_ot_pm"
+                            attrs="{'invisible': ['|',('group_user','!=','pm')]}"
                     />
                     <button name="button_dl_approve" string="Approve" states="pm_approved" type="object"
                             icon="fa-reply text-warning" groups="ot_management.group_ot_dl"
+                            attrs="{'invisible': ['|',('group_user','!=','dl')]}"
                     />
                     <button name="button_refuse" type="object" string="Refuse" class="oe_highlight"
-                            groups="ot_management.group_ot_pm,ot_management.group_ot_dl"
-                            attrs="{'invisible': ['|',('state', '=', 'refused')]}"
+                            groups="ot_management.group_ot_pm"
+                            attrs="{'invisible': ['|',('state','!=','to_approve'),('group_user','!=','pm'),
+                            '|',('state','!=','pm_approved'),('group_user','!=','dl')]}"
                     />
                     <field name="state" widget="statusbar"/>
                 </header>
                 <group>
+                    <group invisible="1">
+                        <field name="group_user"/>
+                    </group>
                     <group>
                         <field name="project_id"/>
                         <field name="manager_id"/>
