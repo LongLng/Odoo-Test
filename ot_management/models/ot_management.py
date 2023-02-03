@@ -16,14 +16,14 @@ class OTRegistration(models.Model):
     _rec_name = 'project_id'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     project_id = fields.Many2one('project.project', string='Project')
-    manager_id = fields.Many2one('hr.employee', string='Approver', compute='get_project_manager', store=True,
+    manager_id = fields.Many2one('hr.employee', string='Approver', compute='compute_manager_id', store=True,
                                  readonly=False, required=True)
-    ot_month = fields.Date(string='OT Month', readonly=True)
+    ot_month = fields.Date(string='OT Month', readonly=True, compute='compute_ot_month', store=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', readonly=True,
-                                  default=lambda self: self.get_default_employee())
+                                  default=lambda self: self.compute_employee_id())
     dl_manager_id = fields.Many2one('hr.employee', string='Department lead', readonly=True,
-                                    default=lambda self: self.get_default_department_leader())
-    create_date = fields.Datetime(string='Created Date', readonly=True)
+                                    default=lambda self: self.compute_dl_manager_id())
+    create_date = fields.Date(string='Created Date', readonly=True, default=lambda self: self.default_create_day())
     additional_hours = fields.Float(string='Total OT', readonly=True, compute='addition_all_ot')
     state = fields.Selection(
         [('draft', 'Draft'), ('to_approve', 'To Approve'), ('pm_approved', 'PM Approved'),
@@ -44,11 +44,26 @@ class OTRegistration(models.Model):
                 print('employee')
                 rec.group_user = 'employee'
 
+    @api.depends('project_id')
+    def compute_ot_month(self):
+        for rec in self:
+            rec.ot_month = fields.Date.today().strftime('%Y-%m-%d')
+            print(rec.ot_month)
+
+    def default_create_day(self):
+        return fields.Date.today().strftime('%Y-%m-%d')
+
     @api.depends('ot_registration_line_ids')
     def addition_all_ot(self):
         for rec in self:
             rec.additional_hours = sum(rec.ot_registration_line_ids.mapped('additional_hours'))
             # _sql_constraints = [('ot_registration', 'unique(project_id)', 'Project must be unique')]
+
+    def unlink(self):
+        print('Test......')
+        if self.state != 'draft':
+            raise ValidationError(_("You cannot Delete Request only in 'Draft' status "))
+        return super(OTRegistration, self).unlink()
 
     # @api.constrains('manager_id')
     # def _check_project_id(self):
@@ -56,20 +71,19 @@ class OTRegistration(models.Model):
     #         manager_id = self.env['ot.registration'].search(['manager_id', '=', rec.manager_id])
     #         if manager_id:
     #             raise ValidationError(_('You cannot create a recursive hierarchy.'))
-
     def send_mail(self, mail_id):
         template_id = self.env.ref('ot_management.%s' % mail_id).id
         self.env['mail.template'].browse(template_id).send_mail(self.id, force_send=True)
 
     @api.depends('project_id')
-    def get_project_manager(self):
+    def compute_manager_id(self):
         for rec in self:
             rec.manager_id = self.env['hr.employee'].search([('user_id.id', '=', rec.project_id.user_id.id)], limit=1)
 
-    def get_default_employee(self):
+    def compute_employee_id(self):
         return self.env['hr.employee'].search([('user_id', '=', self.env.user.id)], limit=1)
 
-    def get_default_department_leader(self):
+    def compute_dl_manager_id(self):
         return self.env['hr.employee'].sudo().search([('user_id', '=', self.env.user.id)], limit=1).parent_id
 
     def button_employ_submit(self):

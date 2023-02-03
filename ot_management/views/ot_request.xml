@@ -23,23 +23,28 @@
                 <header>
                     <button name="button_draft" type="object" string="Reset to Draft" class="oe_highlight"
                             attrs="{'invisible': ['|',('state', '!=', 'refused'),('group_user','!=','employee')]}"
+                            confirm="You want draft"
                     />
                     <button name="button_employ_submit" string="Submit" states="draft" type="object"
                             icon="fa-reply text-warning" groups="ot_management.group_ot_employee"
                             attrs="{'invisible': ['|',('group_user','!=','employee')]}"
+                            confirm="You want submit"
                     />
                     <button name="button_pm_approve" string="Approve" states="to_approve" type="object"
                             icon="fa-reply text-warning" groups="ot_management.group_ot_pm"
                             attrs="{'invisible': ['|',('group_user','!=','pm')]}"
+                            confirm="PM want approve"
                     />
                     <button name="button_dl_approve" string="Approve" states="pm_approved" type="object"
                             icon="fa-reply text-warning" groups="ot_management.group_ot_dl"
                             attrs="{'invisible': ['|',('group_user','!=','dl')]}"
+                            confirm="DL want approve"
                     />
                     <button name="button_refuse" type="object" string="Refuse" class="oe_highlight"
                             groups="ot_management.group_ot_pm"
                             attrs="{'invisible': ['|',('state','!=','to_approve'),('group_user','!=','pm'),
                             '|',('state','!=','pm_approved'),('group_user','!=','dl')]}"
+                            confirm="You want reject request"
                     />
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -98,6 +103,7 @@
                 <filter string="To Approve" name="to_approve" domain="[('state','=','to_approve')]"/>
                 <filter string="PM Approved" name="pm_approved" domain="[('state','=','pm_approved')]"/>
                 <filter string="DL Approved" name="dl_approved" domain="[('state','=','dl_approved')]"/>
+                <filter string="Refused" name="refused" domain="[('state','=','refused')]"/>
                 <group expand="1" string="Group by">
                     <filter name="state" string="State" context="{'group_by':'state'}"/>
                 </group>
