@@ -1,16 +1,102 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <data noupdate="1">
-        <record id="ot_to_pm_template" model="mail.template">
-            <field name="name">Send request to PM</field>
+    <data>
+        <!--        Approved-->
+        <!--        to PM-->
+        <record id="new_request_employee_submitted_template" model="mail.template">
+            <field name="name">OT Request when ${object.employee_id.name} submitted ${object.project_id.name}</field>
             <field name="model_id" ref="ot_management.model_ot_registration"/>
-            <field name="email_from">${object.employee_id.email.formatted | safe}</field>
-            <field name="email_to">${object.manager_id.email}</field>
-            <field name="subject">${object.company_id.name}</field>
+            <field name="email_from">${object.employee_id.work_email |safe}</field>
+            <field name="email_to">${object.manager_id.work_email}</field>
+            <field name="subject">New OT request</field>
             <field name="body_html" type="html">
-                <div style="margin:0px;padding: 0px;">
-                    <p style="margin: 0px;padding: 0px;font-size: 13px;">
+                <div>
+                    <p>
                         Dear ${object.manager_id.name}
+                        <br/>
+                        This email is sent when ${object.employee_id.name} submit ${object.project_id.name} OT of
+                        ${object.employee_id.name}
+                        <br/>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!--        PM to DL-->
+        <record id="new_request_approve_dl_template" model="mail.template">
+            <field name="name">OT Request when PM approved ${object.project_id.name} OT of ${object.employee_id.name}
+            </field>
+            <field name="model_id" ref="ot_management.model_ot_registration"/>
+            <field name="email_from">${object.employee_id.work_email |safe}</field>
+            <field name="email_to">${object.dl_manager_id.work_email}</field>
+            <field name="subject">New OT request</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        Dear ${object.dl_manager_id.name}
+                        <br/>
+                        This email is sent when PM has approved ${object.project_id.name} OT of
+                        ${object.employee_id.name}
+                        <br/>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!--        Done-->
+        <record id="request_done" model="mail.template">
+            <field name="name">OT Request when DL approved ${object.project_id.name} OT of ${object.employee_id.name}
+            </field>
+            <field name="model_id" ref="ot_management.model_ot_registration"/>
+            <field name="email_from">${object.dl_manager_id.work_email |safe}</field>
+            <field name="email_to">${object.employee_id.work_email}</field>
+            <field name="subject">New OT request</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        Dear ${object.employee_id.name}
+                        <br/>
+                        Your request of ${object.project_id.name} OT has been accepted by DL
+                        <br/>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!--        Reject-->
+        <!--        PM Reject-->
+        <record id="pm_reject_template" model="mail.template">
+            <field name="name">OT Request when PM Reject ${object.project_id.name} OT of ${object.employee_id.name}
+            </field>
+            <field name="model_id" ref="ot_management.model_ot_registration"/>
+            <field name="email_from">${object.manager_id.work_email |safe}</field>
+            <field name="email_to">${object.dl_manager_id.work_email},${object.employee_id.work_email}</field>
+            <field name="subject">OT Reject</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        Dear ${object.dl_manager_id.name}
+                        Dear ${object.employee_id.name}
+                        <br/>
+                        This email is sent when PM has reject ${object.project_id.name} OT of ${object.employee_id.name}
+                        <br/>
+                    </p>
+                </div>
+            </field>
+        </record>
+        <record id="dl_reject_template" model="mail.template">
+            <field name="name">OT Request when DL Reject ${object.project_id.name} OT of ${object.employee_id.name}
+            </field>
+            <field name="model_id" ref="ot_management.model_ot_registration"/>
+            <field name="email_from">${object.dl_manager_id.work_email |safe}</field>
+            <field name="email_to">${object.employee_id.work_email}</field>
+            <field name="subject">OT Reject</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        Dear ${object.employee_id.name}
+                        <br/>
+                        This email is sent when DL has reject ${object.project_id.name} OT of ${object.employee_id.name}
                         <br/>
                     </p>
                 </div>

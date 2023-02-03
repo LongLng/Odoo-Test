@@ -88,14 +88,28 @@
                 </div>
             </form>
         </field>
-
+    </record>
+    <record id="view_ot_registration_search" model="ir.ui.view">
+        <field name="name">ot.registration.search</field>
+        <field name="model">ot.registration</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="To Approve" name="to_approve" domain="[('state','=','to_approve')]"/>
+                <filter string="PM Approved" name="pm_approved" domain="[('state','=','pm_approved')]"/>
+                <filter string="DL Approved" name="dl_approved" domain="[('state','=','dl_approved')]"/>
+                <group expand="1" string="Group by">
+                    <filter name="state" string="State" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
     </record>
     <!-- OT Registration Action-->
     <record id="action_ot_request" model="ir.actions.act_window">
         <field name="name">OT Registration</field>
         <field name="res_model">ot.registration</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{}</field>
+        <field name="context">{'search_default_state': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
             </p>

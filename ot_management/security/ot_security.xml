@@ -33,7 +33,7 @@
             <field name="perm_unlink" eval="1"/>
         </record>
         <record id="ot_registration_line_employee_rule" model="ir.rule">
-            <field name="name">OT Registration Employee Rule</field>
+            <field name="name">OT Registration Line Employee Rule</field>
             <field name="model_id" ref="model_ot_registration_line"/>
             <field name="domain_force">[('create_uid', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('group_ot_employee'))]"/>
@@ -56,7 +56,7 @@
         </record>
 
         <record id="ot_registration_line_pm_rule" model="ir.rule">
-            <field name="name">OT Registration Employee Rule</field>
+            <field name="name">OT Registration Line PM Rule</field>
             <field name="model_id" ref="model_ot_registration_line"/>
             <field name="domain_force">['|', ('ot_registration_line_id.manager_id.user_id.id', '=', user.id),
                                         ('state', '!=', 'draft')] </field>
@@ -79,7 +79,7 @@
             <field name="perm_unlink" eval="1"/>
         </record>
         <record id="ot_registration_line_dl_rule" model="ir.rule">
-            <field name="name">OT Registration DL Rule</field>
+            <field name="name">OT Registration Line DL Rule</field>
             <field name="model_id" ref="model_ot_registration_line"/>
             <field name="domain_force">['|', ('state', '!=', 'draft'),
                                         ('ot_registration_line_id.dl_manager_id.user_id.id', '=', user.id)]</field>

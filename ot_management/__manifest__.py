@@ -21,6 +21,9 @@
     'data': [
         'security/ot_security.xml',
         'security/ir.model.access.csv',
+
+        # mail
+        'data/mail_template.xml',
         'views/ot_registration_details.xml',
         'views/ot_request.xml',
     ],

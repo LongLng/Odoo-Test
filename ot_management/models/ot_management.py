@@ -16,11 +16,11 @@ class OTRegistration(models.Model):
     _rec_name = 'project_id'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     project_id = fields.Many2one('project.project', string='Project')
-    manager_id = fields.Many2one('hr.employee', string='Approver', compute='get_default_approver', store=True,
+    manager_id = fields.Many2one('hr.employee', string='Approver', compute='get_project_manager', store=True,
                                  readonly=False, required=True)
     ot_month = fields.Date(string='OT Month', readonly=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', readonly=True,
-                                  default=lambda self: self._get_default_employee())
+                                  default=lambda self: self.get_default_employee())
     dl_manager_id = fields.Many2one('hr.employee', string='Department lead', readonly=True,
                                     default=lambda self: self.get_default_department_leader())
     create_date = fields.Datetime(string='Created Date', readonly=True)
@@ -56,38 +56,48 @@ class OTRegistration(models.Model):
     #         manager_id = self.env['ot.registration'].search(['manager_id', '=', rec.manager_id])
     #         if manager_id:
     #             raise ValidationError(_('You cannot create a recursive hierarchy.'))
+
+    def send_mail(self, mail_id):
+        template_id = self.env.ref('ot_management.%s' % mail_id).id
+        self.env['mail.template'].browse(template_id).send_mail(self.id, force_send=True)
+
     @api.depends('project_id')
-    def get_default_approver(self):
+    def get_project_manager(self):
         for rec in self:
             rec.manager_id = self.env['hr.employee'].search([('user_id.id', '=', rec.project_id.user_id.id)], limit=1)
 
-    def _get_default_employee(self):
-        return self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1)
+    def get_default_employee(self):
+        return self.env['hr.employee'].search([('user_id', '=', self.env.user.id)], limit=1)
 
     def get_default_department_leader(self):
-        pass
+        return self.env['hr.employee'].sudo().search([('user_id', '=', self.env.user.id)], limit=1).parent_id
 
     def button_employ_submit(self):
         for rec in self:
             if rec.env.user.has_group('ot_management.group_ot_employee'):
                 rec.state = 'to_approve'
+                self.send_mail('new_request_employee_submitted_template')
 
     def button_pm_approve(self):
         for rec in self:
             if rec.env.user.has_group('ot_management.group_ot_pm'):
                 rec.state = 'pm_approved'
+                self.send_mail('new_request_approve_dl_template')
 
     def button_dl_approve(self):
         for rec in self:
             if rec.env.user.has_group('ot_management.group_ot_dl'):
                 rec.state = 'dl_approved'
+                self.send_mail('request_done')
 
     def button_refuse(self):
         for rec in self:
-            if rec.env.user.has_group('ot_management.group_ot_pm') and rec.state == 'pm_approved':
+            if rec.env.user.has_group('ot_management.group_ot_dl') and rec.state == 'pm_approved':
                 rec.state = 'refused'
-            elif rec.env.user.has_group('ot_management.group_ot_dl') and rec.state == 'dl_approved':
+                self.send_mail('dl_reject_template')
+            elif rec.env.user.has_group('ot_management.group_ot_pm') and rec.state == 'to_approve':
                 rec.state = 'refused'
+                self.send_mail('pm_reject_template')
 
     def button_draft(self):
         for rec in self:
