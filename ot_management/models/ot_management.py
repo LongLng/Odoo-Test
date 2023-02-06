@@ -65,6 +65,10 @@ class OTRegistration(models.Model):
             raise ValidationError(_("You cannot Delete Request only in 'Draft' status "))
         return super(OTRegistration, self).unlink()
 
+    def get_link_detail(self):
+        for rec in self:
+            return f'/ot_management/ot_registration/{rec.id}'
+
     # @api.constrains('manager_id')
     # def _check_project_id(self):
     #     for rec in self:

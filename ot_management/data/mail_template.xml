@@ -17,6 +17,7 @@
                         This email is sent when ${object.employee_id.name} submit ${object.project_id.name} OT of
                         ${object.employee_id.name}
                         <br/>
+                        <a href="${object.get_link_detail()}">Click here to view detail</a>
                     </p>
                 </div>
             </field>
@@ -38,6 +39,7 @@
                         This email is sent when PM has approved ${object.project_id.name} OT of
                         ${object.employee_id.name}
                         <br/>
+                        <a href="${object.get_link_detail()}">Click here to view detail</a>
                     </p>
                 </div>
             </field>
@@ -58,6 +60,7 @@
                         <br/>
                         Your request of ${object.project_id.name} OT has been accepted by DL
                         <br/>
+                        <a href="${object.get_link_detail()}">Click here to view detail</a>
                     </p>
                 </div>
             </field>
@@ -80,6 +83,8 @@
                         <br/>
                         This email is sent when PM has reject ${object.project_id.name} OT of ${object.employee_id.name}
                         <br/>
+                        <a href="${object.get_link_detail()}">Click here to view detail</a>
+
                     </p>
                 </div>
             </field>
@@ -98,6 +103,7 @@
                         <br/>
                         This email is sent when DL has reject ${object.project_id.name} OT of ${object.employee_id.name}
                         <br/>
+                        <a href="${object.get_link_detail()}">Click here to view detail</a>
                     </p>
                 </div>
             </field>
